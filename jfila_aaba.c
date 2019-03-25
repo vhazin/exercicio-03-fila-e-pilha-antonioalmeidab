@@ -6,16 +6,9 @@ typedef struct node{
     struct node *next;
 } node;
 
-int main(void) {
-    int qtElem;
-    scanf("%d", &qtElem);
+node *preencheFila(int qtdElementos, node *inicio, node *atual){
     int i = 0;
-
-    node *ini = NULL;
-    node *auxiliar = NULL;
-    
-
-    while(i < qtElem){
+    while(i < qtdElementos){
         node *novo = malloc(sizeof(node));
         int dado;
         scanf("%d", &dado);
@@ -23,58 +16,80 @@ int main(void) {
         novo->dado = dado;
         novo->next = NULL;
 
-        if(ini == NULL){
-            ini = novo;
-            auxiliar = ini;
+        if(inicio == NULL){
+            inicio = novo;
+            atual = inicio;
         }
         else{
-            auxiliar->next = novo;
-            auxiliar= auxiliar->next;
+            atual->next = novo;
+            atual= atual->next;
         }
         i++;
     }
+    return inicio;
+}
 
-    int qtRet;
-    int *retirados;
-    
-    scanf("%d", &qtRet);
-    retirados = (int *)malloc(qtRet * sizeof(int));
+node *retiradaFila(int qtdRetirados, node *inicio, node *atual){
+    int retirados;
+    // retirados = (int *)malloc(sizeof(int));
+    node *anterior = NULL;
 
-    for(i = 0; i < qtRet; i++){
-        scanf("%d", &retirados[i]);
-    }
-
-    auxiliar = ini;
-    node *anterior =NULL;
-    
-    while(auxiliar != NULL){
-        for(i = 0; i < qtRet; i++){
-            if(auxiliar->dado == retirados[i]){
+    // for(int i = 0; i < qtdRetirados; i++){
+    //     scanf("%d", &retirados[i]);
+    // }
+    for(int i = 0; i < qtdRetirados; i++){
+        scanf("%d", &retirados);
+        atual = inicio;
+        anterior = NULL;
+        while(atual != NULL){
+            if(atual->dado == retirados){
                 if(anterior == NULL){
-                    ini = auxiliar->next;
+                    inicio = atual->next;
                 }
                 else{
-                    anterior->next = auxiliar->next;
+                    anterior->next = atual->next;
                 }
                 break;
             }
-            else if(i == qtRet - 1){
-                anterior = auxiliar;
-            }
+            anterior = atual;
+            atual = atual->next;
+            
         }
-        auxiliar = auxiliar->next;
     }
+    return inicio;
+}
 
-    auxiliar = ini;
-    while(auxiliar != NULL){
-        int valor = auxiliar->dado;
-        if(auxiliar->next == NULL){
+void imprimeFila(node *inicio, node *atual){
+    atual = inicio;
+    while(atual != NULL){
+        int valor = atual->dado;
+        if(atual->next == NULL){
             printf("%d\n",valor);
         }
         else{
             printf("%d ",valor);
         }
-        auxiliar = auxiliar->next;
+        atual = atual->next;
     }
+}
+
+int main(void) {
+    int qtElem;
+    scanf("%d", &qtElem);
+    
+    node *ini = NULL;
+    node *auxiliar = NULL;
+
+    ini = preencheFila(qtElem, ini, auxiliar);
+    
+    auxiliar = ini;
+
+    int qtRet;   
+    scanf("%d", &qtRet);
+
+
+    ini = retiradaFila(qtRet, ini, auxiliar);
+    auxiliar = ini;
+    imprimeFila(ini, auxiliar);
     return 0;
 }
